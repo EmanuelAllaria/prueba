@@ -1,6 +1,7 @@
 {
   "name": "prueba-tecnica-frontend",
   "version": "0.1.0",
+  "homepage": "https://emanuelallaria.github.io/prueba",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,6 +12,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "datatables.net": "^2.2.1",
+    "datatables.net-bs5": "^2.2.1",
     "datatables.net-dt": "^2.2.1",
     "datatables.net-vue3": "^3.0.4",
     "jquery": "^3.7.1",

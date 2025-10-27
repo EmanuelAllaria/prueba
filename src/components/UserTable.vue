@@ -9,8 +9,8 @@
           <tr>
             <th>#</th>
             <th>Nombre Completo</th>
-            <th>Teléfono</th>
             <th>Correo Electrónico</th>
+            <th>Teléfono</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -25,8 +25,8 @@
               {{ user.usuarioNombre }} {{ user.usuarioApellidoPaterno }}
               {{ user.usuarioApellidoMaterno }}
             </td>
-            <td>{{ user.usuarioTelefono }}</td>
             <td>{{ user.usuarioEmail }}</td>
+            <td>{{ user.usuarioTelefono }}</td>
             <td>
               <button
                 class="btn btn-danger btn-sm px-3"
@@ -53,8 +53,8 @@
 
 <script>
 import $ from "jquery";
-import "datatables.net";
-import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import "datatables.net-bs5";
+import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 
 export default {
   name: "UserTable",
@@ -71,6 +71,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    searchQuery: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -78,8 +82,8 @@ export default {
       columnIndexMap: {
         numero: 0,
         usuarioNombre: 1,
-        usuarioTelefono: 2,
-        usuarioEmail: 3,
+        usuarioEmail: 2,
+        usuarioTelefono: 3,
         acciones: 4,
       },
       photo: null,
@@ -98,22 +102,25 @@ export default {
           this.dataTableInstance = $(el).DataTable({
             pageLength: 10,
             lengthChange: true,
+            dom: "lrtip",
             language: {
               url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json",
             },
             columnDefs: [
-              { targets: 0, visible: this.columns.numero },
+              { targets: 0, visible: this.columns.numero, orderable: false },
               { targets: 1, visible: this.columns.usuarioNombre },
-              { targets: 2, visible: this.columns.usuarioTelefono },
-              { targets: 3, visible: this.columns.usuarioEmail },
-              { targets: 4, visible: this.columns.acciones },
+              { targets: 2, visible: this.columns.usuarioEmail },
+              { targets: 3, visible: this.columns.usuarioTelefono },
+              { targets: 4, visible: this.columns.acciones, orderable: false },
             ],
           });
         }
       });
     },
     removeUser(index) {
-      this.$emit("remove-user", index);
+      if (confirm("¿Eliminar este usuario de la tabla?")) {
+        this.$emit("remove-user", index);
+      }
     },
     takePhoto() {
       const video = this.$refs.videoElement;
@@ -137,7 +144,7 @@ export default {
             video.srcObject = null;
             video.style.display = "none";
 
-            alert("Foto tomada correctamente");
+            this.$emit("photo-taken", this.photo);
           }, 2000);
         })
         .catch((error) => {
@@ -148,6 +155,11 @@ export default {
   watch: {
     users() {
       this.reInitDataTable();
+    },
+    searchQuery(val) {
+      if (this.dataTableInstance) {
+        this.dataTableInstance.search(val || "").draw();
+      }
     },
     columns: {
       deep: true,

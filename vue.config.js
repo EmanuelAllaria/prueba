@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: process.env.NODE_ENV === "production" ? "/prueba/" : "/",
   chainWebpack: (config) => {
     config.plugin("define").tap((definitions) => {
       definitions[0]["__VUE_OPTIONS_API__"] = true;
